@@ -41,5 +41,7 @@ class Deck:
         drawnCard = self.Cards.pop()
         self.Drawn.append(drawnCard)
         attackValue = max(attackValue + drawnCard.modifier, 0)
-
+        print(f"\t{attackValue}")
+        for effect in drawnCard.Effects:
+            print(f"\t{effect}")
         return attackValue
