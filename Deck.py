@@ -54,18 +54,23 @@ class Deck:
         if len(self.Cards) == 0:
             self.reset()
 
+        effectList = []
         # Draw card
-        drawnCard = self.Cards.pop()
+        while True:
+            drawnCard = self.Cards.pop()
+            attackValue = attackValue + drawnCard.modifier
+            effectList.extend(drawnCard.Effects)
+            # If the card shouldn't be removed, then add it to drawn pile
+            if not Effect.REMOVE in drawnCard.Effects:
+                self.Drawn.append(drawnCard)
+            if not drawnCard.rolling:
+                break
 
-        # If the card shouldn't be removed, then add it to drawn pile
-        if not Effect.REMOVE in drawnCard.Effects:
-            self.Drawn.append(drawnCard)
-
-        attackValue = max(attackValue + drawnCard.modifier, 0)
+        attackValue = max(attackValue, 0)
         print(f"\t{attackValue}")
 
         # Print out effects
-        for effect in drawnCard.Effects:
+        for effect in effectList:
             print(f"\t{effect}")
             if effect == Effect.SHUFFLE:
                 self.resetNeeded = True
