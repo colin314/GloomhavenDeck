@@ -38,7 +38,8 @@ class Deck:
                         self.Cards.remove(card)
                         break
             else:
-                pass  # add the card to the deck
+                newCard = Card(modifier, rolling, *effects)
+                self.Cards.append(newCard)
 
     def _addCard(self, cardStr):
         self.Cards.append(self._loadCard(cardStr))
