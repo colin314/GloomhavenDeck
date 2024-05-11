@@ -8,7 +8,7 @@ class Deck:
         self.Cards = []
         self.Drawn = []
         self.loadDeck(deckFile)
-        self.shuffle()
+        self._shuffle()
 
     def loadDeck(self, deckFile):
         f = open(deckFile)
@@ -36,10 +36,23 @@ class Deck:
         self.Drawn = []
         self._shuffle()
 
+    def addCurse(self, n=1):
+        for i in range(n):
+            curseCard = Card(0, False, Effect.MISS, Effect.REMOVE)
+            self.Cards.append(curseCard)
+            self._shuffle()
+
+    def addBless(self, n=1):
+        for i in range(n):
+            curseCard = Card(0, False, Effect.CRITICAL, Effect.REMOVE)
+            self.Cards.append(curseCard)
+            self._shuffle()
+
     def draw(self, attackValue):
         # Add handling for empty deck
         drawnCard = self.Cards.pop()
-        self.Drawn.append(drawnCard)
+        if not Effect.REMOVE in drawnCard.Effects:
+            self.Drawn.append(drawnCard)
         attackValue = max(attackValue + drawnCard.modifier, 0)
         print(f"\t{attackValue}")
         for effect in drawnCard.Effects:
