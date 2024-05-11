@@ -2,6 +2,7 @@ from enum import Enum
 
 
 class Effect(Enum):
+    NONE = 0
     CRITICAL = 1
     MISS = 2
     WOUND = 3
