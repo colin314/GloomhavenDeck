@@ -10,3 +10,10 @@ class Card:
         self.Effects = []
         for x in args:
             self.Effects.append(x)
+
+    def equals(self, modifier, rolling, effects):
+        return (
+            self.modifier == modifier
+            and self.rolling == rolling
+            and set(self.Effects) == set(effects)
+        )

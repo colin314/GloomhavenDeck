@@ -18,6 +18,28 @@ class Deck:
         for cardStr in lines:
             self._addCard(cardStr)
 
+    def loadDeckModifications(self, modificationFile):
+        f = open(modificationFile)
+        lines = f.read().splitlines()
+
+        for modStr in lines:
+            mods = modStr.split(",", 3)
+            if len(mods) != 4:
+                raise Exception(
+                    "Unexpected input in modification strings. Must have at least 4 elements"
+                )
+            removeCard = bool(mods[0])
+            modifier = int(mods[1])
+            rolling = bool(mods[2])
+            effects = [Effect(int(x)) for x in mods[3].split(",")]
+            if removeCard:
+                for card in self.Cards:
+                    if card.equals(modifier, rolling, effects):
+                        self.Cards.remove(card)
+                        break
+            else:
+                pass  # add the card to the deck
+
     def _addCard(self, cardStr):
         self.Cards.append(self._loadCard(cardStr))
 
