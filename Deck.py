@@ -1,11 +1,19 @@
 from Card import Card
 from MyEnums import Effect
+import random as rand
 
 
 class Deck:
     def __init__(self, deckFile):
         self.Cards = []
+        self.Drawn = []
         self.loadDeck(deckFile)
+        self.effectMap = {Effect.RESET: self.shuffle}
+        self.shuffle()
+
+    def invokeEffect(self, card, effect):
+        if effect in self.effectMap:
+            self.effectMap[effect]()
 
     def loadDeck(self, deckFile):
         f = open(deckFile)
@@ -24,3 +32,22 @@ class Deck:
         rolling = bool(x[1])
         effects = [int(i) for i in x[2].split(",")]
         return Card(modifier, rolling, *effects)
+
+    def _shuffle(self):
+        rand.shuffle(self.Cards)
+
+    def reset(self):
+        self.Cards.extend(self.Drawn)
+        self.Drawn = []
+        self._shuffle()
+
+    def draw(self, attackValue):
+        # Add handling for empty deck
+        drawnCard = self.Cards.pop()
+        self.Drawn.append(drawnCard)
+        attackValue = max(attackValue + drawnCard.modifier, 0)
+
+        for effect in drawnCard.Effects:
+            self.invokeEffect(drawnCard, effect)
+
+        return
