@@ -4,10 +4,11 @@ import random as rand
 
 
 class Deck:
-    def __init__(self, deckFile):
+    def __init__(self, deckFile, modificationFile):
         self.Cards = []
         self.Drawn = []
         self.loadDeck(deckFile)
+        self.loadDeckModifications(modificationFile)
         self._shuffle()
         self.resetNeeded = False
 
