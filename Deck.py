@@ -49,7 +49,9 @@ class Deck:
             self._shuffle()
 
     def draw(self, attackValue):
-        # Add handling for empty deck
+        if len(self.Cards) == 0:
+            self.reset()
+
         drawnCard = self.Cards.pop()
         if not Effect.REMOVE in drawnCard.Effects:
             self.Drawn.append(drawnCard)
