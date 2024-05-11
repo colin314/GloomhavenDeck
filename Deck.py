@@ -28,9 +28,9 @@ class Deck:
                 raise Exception(
                     "Unexpected input in modification strings. Must have at least 4 elements"
                 )
-            removeCard = bool(mods[0])
+            removeCard = mods[0] == "0"
             modifier = int(mods[1])
-            rolling = bool(mods[2])
+            rolling = mods[2] == "1"
             effects = [Effect(int(x)) for x in mods[3].split(",")]
             if removeCard:
                 for card in self.Cards:
@@ -48,7 +48,7 @@ class Deck:
     def _loadCard(self, cardStr):
         x = cardStr.split(",", 2)
         modifier = int(x[0])
-        rolling = bool(x[1])
+        rolling = x[1] == "1"
         effects = [Effect(int(i)) for i in x[2].split(",")]
         return Card(modifier, rolling, *effects)
 
