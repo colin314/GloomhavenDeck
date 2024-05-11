@@ -36,3 +36,5 @@ class Effect(Enum):
     CUSTOM_1 = 31
     CUSTOM_2 = 32
     CUSTOM_3 = 33
+    REMOVE = 34
+    SHUFFLE = 35
