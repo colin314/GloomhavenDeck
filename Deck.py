@@ -8,12 +8,7 @@ class Deck:
         self.Cards = []
         self.Drawn = []
         self.loadDeck(deckFile)
-        self.effectMap = {Effect.RESET: self.shuffle}
         self.shuffle()
-
-    def invokeEffect(self, card, effect):
-        if effect in self.effectMap:
-            self.effectMap[effect]()
 
     def loadDeck(self, deckFile):
         f = open(deckFile)
@@ -47,7 +42,4 @@ class Deck:
         self.Drawn.append(drawnCard)
         attackValue = max(attackValue + drawnCard.modifier, 0)
 
-        for effect in drawnCard.Effects:
-            self.invokeEffect(drawnCard, effect)
-
-        return
+        return attackValue
