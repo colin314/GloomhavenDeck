@@ -104,3 +104,58 @@ class Deck:
             print("\tDon't forget you need to reset your deck")
 
         return attackValue
+
+    def drawSpecial(self, attackValue, advantage=False):
+        currCard = self.Cards.pop()
+        rollingCards = []
+        while currCard.rolling:
+            rollingCards.append(currCard)
+            currCard = self.Cards.pop()
+        firstCard = currCard
+        secondCard = self.Cards.pop()
+
+        # Just put everything in the draw pile right away
+        self.Drawn.extend(
+            [x for x in [firstCard, secondCard] if not Effect.REMOVE in x.Effects]
+        )
+        self.Drawn.extend([x for x in rollingCards if not Effect.REMOVE in x.Effects])
+
+        # If disadvantage, discard all rolling modifiers
+        if not advantage:
+            rollingCards = []
+
+        rollingModifier = sum([x.modifier for x in rollingCards])
+        rollingEffects = set(
+            [
+                effect
+                for card in rollingCards
+                for effect in card.Effects
+                if effect != Effect.NONE
+            ]
+        )
+
+        # TODO: account for drawing a shuffle card
+
+        # First Card
+        modifiedAttack = attackValue + rollingModifier + firstCard.modifier
+        print(f"\tFirst Card: {modifiedAttack}")
+        print("\tFirst Card Effects: ")
+        for effect in firstCard.Effects:
+            print(f"\t\t{effect}")
+
+        # Second Card
+        modifiedAttack = attackValue + rollingModifier + secondCard.modifier
+        print(f"\tSecond Card: {modifiedAttack}")
+        print("\tSecond Card Effects: ")
+        for effect in secondCard.Effects:
+            print(f"\t\t{effect}")
+
+        if len(rollingCards) > 0:
+            print("\tRolling Effects:")
+            for effect in rollingEffects:
+                print(f"\t\t{effect}")
+
+        print("")
+
+        # Compare and get outcome
+        # Put cards in drawn pile
