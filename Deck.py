@@ -25,7 +25,7 @@ class Deck:
         x = cardStr.split(",", 2)
         modifier = int(x[0])
         rolling = bool(x[1])
-        effects = [int(i) for i in x[2].split(",")]
+        effects = [Effect(int(i)) for i in x[2].split(",")]
         return Card(modifier, rolling, *effects)
 
     def _shuffle(self):

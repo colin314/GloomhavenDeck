@@ -9,4 +9,4 @@ class Card:
         self.rolling = rolling
         self.Effects = []
         for x in args:
-            self.Effects.append(Effect(x))
+            self.Effects.append(x)
