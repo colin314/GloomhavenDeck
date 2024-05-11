@@ -9,6 +9,7 @@ class Deck:
         self.Drawn = []
         self.loadDeck(deckFile)
         self._shuffle()
+        self.resetNeeded = False
 
     def loadDeck(self, deckFile):
         f = open(deckFile)
@@ -35,6 +36,7 @@ class Deck:
         self.Cards.extend(self.Drawn)
         self.Drawn = []
         self._shuffle()
+        self.resetNeeded = False
 
     def addCurse(self, n=1):
         for i in range(n):
@@ -52,11 +54,24 @@ class Deck:
         if len(self.Cards) == 0:
             self.reset()
 
+        # Draw card
         drawnCard = self.Cards.pop()
+
+        # If the card shouldn't be removed, then add it to drawn pile
         if not Effect.REMOVE in drawnCard.Effects:
             self.Drawn.append(drawnCard)
+
         attackValue = max(attackValue + drawnCard.modifier, 0)
         print(f"\t{attackValue}")
+
+        # Print out effects
         for effect in drawnCard.Effects:
             print(f"\t{effect}")
+            if effect == Effect.SHUFFLE:
+                self.resetNeeded = True
+
+        # Reset reminder
+        if self.resetNeeded:
+            print("\tDon't forget you need to reset your deck")
+
         return attackValue
