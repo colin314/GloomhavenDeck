@@ -19,6 +19,12 @@ class DeckProgram(cmd.Cmd):
             arg = 2
         self.deck.draw(int(arg))
 
+    def do_aa(self, arg):
+        "Make an attack with advantage: aa 2"
+        if not arg:
+            arg = 2
+        self.deck.drawSpecial(int(arg), True)
+
     def do_reset(self, arg):
         "Shuffle the discard back into the attack deck: reset"
         self.deck.reset()
