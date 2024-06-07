@@ -15,7 +15,9 @@ class DeckProgram(cmd.Cmd):
 
     def do_attack(self, arg):
         "Draw a card from the deck: attack 5"
-        self.deck.draw(*parse(arg))
+        if not arg:
+            arg = 2
+        self.deck.draw(int(arg))
 
     def do_reset(self, arg):
         "Shuffle the discard back into the attack deck: reset"
