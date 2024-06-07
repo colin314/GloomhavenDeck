@@ -74,12 +74,10 @@ class Deck:
             self.Cards.append(curseCard)
             self._shuffle()
 
-    def printEffects(self, effectList):
-        for effect in effectList:
-            if not effect == Effect.NONE:
-                print(f"\t{effect.name}")
-            if effect == Effect.SHUFFLE:
-                self.resetNeeded = True
+    def _getEffectString(self, effectList):
+        if any(x == Effect.SHUFFLE for x in effectList):
+            self.resetNeeded = True
+        return str.join(", ", [x.name for x in effectList if not x == Effect.NONE])
 
     def draw(self, attackValue):
         if len(self.Cards) == 0:
@@ -101,7 +99,7 @@ class Deck:
         print(f"\t{attackValue}")
 
         # Print out effects
-        self.printEffects(effectList)
+        print(self._getEffectString(effectList))
 
         # Reset reminder
         if self.resetNeeded:
