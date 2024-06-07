@@ -80,29 +80,33 @@ class Deck:
             self.resetNeeded = True
         return str.join(", ", [x.name for x in effectList if not x == Effect.NONE])
 
-    def draw(self, attackValue):
+    def draw(self, attackValue, attackCount=1):
         if len(self.Cards) == 0:
             self.reset()
 
-        effectList = []
-        # Draw card
-        while True:
-            # FIXME: There is a bug if you try to roll into an empty deck
-            drawnCard = self.Cards.pop()
-            attackValue = attackValue + drawnCard.modifier
-            effectList.extend(drawnCard.Effects)
-            # If the card shouldn't be removed, then add it to drawn pile
-            if not Effect.REMOVE in drawnCard.Effects:
-                self.Drawn.append(drawnCard)
-            if not drawnCard.rolling:
-                break
+        origAttack = attackValue
+        attacks = [["Attack Value", "Effect List"]]
+        for i in range(attackCount):
+            effectList = []
+            attackValue = origAttack
+            # Draw card
+            while True:
+                # FIXME: There is a bug if you try to roll into an empty deck
+                drawnCard = self.Cards.pop()
+                attackValue = attackValue + drawnCard.modifier
+                effectList.extend(drawnCard.Effects)
+                # If the card shouldn't be removed, then add it to drawn pile
+                if not Effect.REMOVE in drawnCard.Effects:
+                    self.Drawn.append(drawnCard)
+                if not drawnCard.rolling:
+                    break
 
-        attackValue = max(attackValue, 0)
-        effectStr = self._getEffectString(effectList)
-
+            attackValue = max(attackValue, 0)
+            effectStr = self._getEffectString(effectList)
+            attacks.append([attackValue, effectStr])
         print(
             tabulate(
-                [["Attack Value", "Effect List"], [attackValue, effectStr]],
+                attacks,
                 headers="firstrow",
                 tablefmt="fancy_grid",
                 showindex="always",

@@ -14,10 +14,10 @@ class DeckProgram(cmd.Cmd):
         self.deck = Deck("BaseDeck.csv", "DeckModifications.csv")
 
     def do_a(self, arg):
-        "Draw a card from the deck: attack 5"
+        "Make an attack for x n times: attack x n"
         if not arg:
-            arg = 2
-        self.deck.draw(int(arg))
+            arg = "2 1"
+        self.deck.draw(*parse(arg))
 
     def do_aa(self, arg):
         "Make an attack with advantage: aa 2"
