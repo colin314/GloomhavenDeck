@@ -95,7 +95,8 @@ class Deck:
 
         # Print out effects
         for effect in effectList:
-            print(f"\t{effect}")
+            if not effect == Effect.NONE:
+                print(f"\t{effect}")
             if effect == Effect.SHUFFLE:
                 self.resetNeeded = True
 
