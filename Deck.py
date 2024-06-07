@@ -77,7 +77,7 @@ class Deck:
     def printEffects(self, effectList):
         for effect in effectList:
             if not effect == Effect.NONE:
-                print(f"\t{effect}")
+                print(f"\t{effect.name}")
             if effect == Effect.SHUFFLE:
                 self.resetNeeded = True
 
