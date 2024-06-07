@@ -13,7 +13,7 @@ class DeckProgram(cmd.Cmd):
         cmd.Cmd.__init__(self)
         self.deck = Deck("BaseDeck.csv", "DeckModifications.csv")
 
-    def do_attack(self, arg):
+    def do_a(self, arg):
         "Draw a card from the deck: attack 5"
         if not arg:
             arg = 2
@@ -30,6 +30,12 @@ class DeckProgram(cmd.Cmd):
         self.deck.addCurse(int(arg))
 
     def do_bye(self, arg):
+        "Stop recording, close the turtle window, and exit:  BYE"
+        print("Thank you for using the virtual attack deck")
+        self.close()
+        return True
+
+    def do_q(self, arg):
         "Stop recording, close the turtle window, and exit:  BYE"
         print("Thank you for using the virtual attack deck")
         self.close()
