@@ -118,6 +118,12 @@ class Deck:
         firstCard = currCard
         secondCard = self.Cards.pop()
 
+        # Check for shuffle cards
+        drawnCards = [firstCard, secondCard]
+        drawnCards.extend(rollingCards)
+        if any(any(x == Effect.SHUFFLE for x in card.Effects) for card in drawnCards):
+            self.resetNeeded = True
+
         # Just put everything in the draw pile right away
         self.Drawn.extend(
             [x for x in [firstCard, secondCard] if not Effect.REMOVE in x.Effects]
@@ -137,8 +143,6 @@ class Deck:
                 if effect != Effect.NONE
             ]
         )
-
-        # TODO: account for drawing a shuffle card
 
         # First Card
         modifiedAttack = attackValue + rollingModifier + firstCard.modifier
