@@ -87,6 +87,7 @@ class Deck:
         effectList = []
         # Draw card
         while True:
+            # FIXME: There is a bug if you try to roll into an empty deck
             drawnCard = self.Cards.pop()
             attackValue = attackValue + drawnCard.modifier
             effectList.extend(drawnCard.Effects)
