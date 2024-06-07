@@ -17,3 +17,8 @@ class Card:
             and self.rolling == rolling
             and set(self.Effects) == set(effects)
         )
+
+    def print(self):
+        print(f"Modifier: {self.modifier}")
+        print(f'Rolling? {"Yes" if self.rolling else "No"}')
+        print(f'Effect: {str.join(",",[str(effect) for effect in self.Effects])}')
