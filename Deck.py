@@ -1,6 +1,7 @@
 from Card import Card
 from MyEnums import Effect
 import random as rand
+from tabulate import tabulate
 
 
 class Deck:
@@ -96,10 +97,16 @@ class Deck:
                 break
 
         attackValue = max(attackValue, 0)
-        print(f"\t{attackValue}")
+        effectStr = self._getEffectString(effectList)
 
-        # Print out effects
-        print(self._getEffectString(effectList))
+        print(
+            tabulate(
+                [["Attack Value", "Effect List"], [attackValue, effectStr]],
+                headers="firstrow",
+                tablefmt="fancy_grid",
+                showindex="always",
+            )
+        )
 
         # Reset reminder
         if self.resetNeeded:
