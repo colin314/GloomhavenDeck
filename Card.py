@@ -1,6 +1,6 @@
 from MyEnums import Effect
 import uuid
-
+from Resources import bcolors
 
 class Card:
     def __init__(self, modifier, rolling=False, *args):
@@ -25,3 +25,16 @@ class Card:
 
     def key(self):
         return str.join("^",[str(self.modifier),str(self.rolling),*sorted([x.name for x in self.Effects])])
+    
+    def modifierStr(self):
+        if Effect.CRITICAL in self.Effects:
+            color = bcolors.MAGENTA
+        elif Effect.MISS in self.Effects:
+            color = bcolors.YELLOW
+        elif self.modifier > 0:
+            color = bcolors.GREEN
+        elif self.modifier < 0:
+            color = bcolors.RED
+        else:
+            color = bcolors.WHITE
+        return color + str(self.modifier) + bcolors.ENDC
