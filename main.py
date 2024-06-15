@@ -67,6 +67,10 @@ class DeckProgram(cmd.Cmd):
             arg = 1
         self.deck.addCurse(int(arg))
 
+    def do_printdeck(self, arg):
+        "Print the contents of the deck"
+        self.deck.printDeck()
+
     def do_q(self, arg):
         "Stop recording, close the turtle window, and exit:  BYE"
         print("Thank you for using the virtual attack deck")

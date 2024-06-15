@@ -3,10 +3,11 @@ from MyEnums import Effect
 import random as rand
 from tabulate import tabulate
 from datetime import datetime
+from collections import Counter
 
 
 class Deck:
-    def __init__(self, deckFile, modificationFile, resetTimeout = 60):
+    def __init__(self, deckFile, modificationFile, resetTimeout=60):
         self._Cards = []
         self._Drawn = []
         self._loadDeck(deckFile)
@@ -16,7 +17,7 @@ class Deck:
         self._resetTime = datetime.now()
         self._resetTimeout = resetTimeout
 
-#region Private functions
+    # region Private functions
     def _loadDeck(self, deckFile):
         f = open(deckFile)
         lines = f.read().splitlines()
@@ -84,8 +85,13 @@ class Deck:
         return drawnCard
 
     def _checkForReset(self):
-        if self._resetNeeded and (datetime.now() - self._resetTime).total_seconds() > self._resetTimeout:
-            cont = input("Your deck needs a reset. Enter 0 to ignore and continue, 1 to reset and continue: ")
+        if (
+            self._resetNeeded
+            and (datetime.now() - self._resetTime).total_seconds() > self._resetTimeout
+        ):
+            cont = input(
+                "Your deck needs a reset. Enter 0 to ignore and continue, 1 to reset and continue: "
+            )
             cont = int(cont)
             if cont == 1:
                 self.reset()
@@ -95,12 +101,15 @@ class Deck:
     def _setResetFlag(self):
         self._resetNeeded = True
         self._resetTime = datetime.now()
-#endregion
 
-#region Public functions
+    # endregion
+
+    # region Public functions
     def reset(self, hard=False):
         if not hard and not self._resetNeeded:
-            print("No reset is needed. If you would like to reset anyways, do a hard reset.")
+            print(
+                "No reset is needed. If you would like to reset anyways, do a hard reset."
+            )
             return
         self._Cards.extend(self._Drawn)
         self._Drawn = []
@@ -175,7 +184,9 @@ class Deck:
             self._Drawn.extend(drawnCards)
 
             # Check for shuffle cards
-            if any(any(x == Effect.SHUFFLE for x in card.Effects) for card in drawnCards):
+            if any(
+                any(x == Effect.SHUFFLE for x in card.Effects) for card in drawnCards
+            ):
                 self._setResetFlag()
 
             # If disadvantage, discard all rolling modifiers
@@ -222,4 +233,33 @@ class Deck:
             print("\tDon't forget you need to reset your deck")
 
         print("")
-#endregion
+
+    def printDeck(self):
+        count = Counter([card.key() for card in self._Cards])
+        cardDict = {}
+        for card in self._Cards:
+            cardDict[card.key()] = card
+
+        table = [["Count", "Modifier", "Rolling?", "Effect List"]]
+        tableRows = []
+        for key, card in cardDict.items():
+            tableRow = [
+                count[key],
+                card.modifier,
+                "True" if card.rolling else "",
+                self._getEffectString(card.Effects),
+            ]
+            tableRows.append(tableRow)
+
+        def sortAlg(row):
+            sortVal = int(str(row[1]) + ("1" if row[2] == "True" else "0"))
+            print(sortVal)
+            return sortVal
+
+        tableRows.sort(key=sortAlg)
+        table.extend(tableRows)
+
+        print(tabulate(table, headers="firstrow", tablefmt="fancy_grid"))
+
+
+# endregion
