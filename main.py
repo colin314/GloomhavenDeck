@@ -62,10 +62,16 @@ class DeckProgram(cmd.Cmd):
             self.defaultAttack = int(arg)
 
     def do_curse(self, arg):
-        "Add a n curses to your deck: curse"
+        "Add n curses to your deck (default 1): curse n"
         if not arg:
             arg = 1
         self.deck.addCurse(int(arg))
+
+    def do_bless(self, arg):
+        "Add n blesses to your deck (default 1): bless n"
+        if not arg:
+            arg = 1
+        self.deck.addBless(int(arg))
 
     def do_printdeck(self, arg):
         "Print the contents of the deck"
