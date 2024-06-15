@@ -26,8 +26,12 @@ class DeckProgram(cmd.Cmd):
         self.deck.drawSpecial(int(arg), True)
 
     def do_reset(self, arg):
-        "Shuffle the discard back into the attack deck: reset"
-        self.deck.reset()
+        "Shuffle the discard back into the attack deck. Only resets if one is needed. To override this (i.e., a hard reset), add a 1 as an option to the command: reset"
+        if not arg:
+            arg = False
+        else:
+            arg = True
+        self.deck.reset(arg)
 
     def do_curse(self, arg):
         "Add a n curses to your deck: curse"

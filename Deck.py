@@ -57,7 +57,10 @@ class Deck:
     def _shuffle(self):
         rand.shuffle(self.Cards)
 
-    def reset(self):
+    def reset(self, hard=False):
+        if not hard and not self.resetNeeded:
+            print("No reset is needed. If you would like to reset anyways, do a hard reset.")
+            return
         self.Cards.extend(self.Drawn)
         self.Drawn = []
         self._shuffle()
