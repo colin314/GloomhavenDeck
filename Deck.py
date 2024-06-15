@@ -81,6 +81,14 @@ class Deck:
                 color = bcolors.YELLOW
             effectOutput.append(color + effect.name + bcolors.ENDC)
         return str.join(", ", effectOutput)
+    
+    def _getModifierForPrinting(self, modifier, effectList):
+        modStr = str(modifier)
+        if Effect.CRITICAL in effectList:
+            modStr += " (" + bcolors.MAGENTA + "x2" + bcolors.ENDC + ")"
+        elif Effect.MISS in effectList:
+            modStr = bcolors.YELLOW + "0" + bcolors.ENDC
+        return modStr
 
     def _drawCard(self, drawnCards):
         if len(self._Cards) == 0:
@@ -174,7 +182,7 @@ class Deck:
 
             attackValue = max(attackValue, 0)
             effectStr = self._getEffectString(effectList)
-            attacks.append([attackValue, effectStr])
+            attacks.append([self._getModifierForPrinting(attackValue,effectList), effectStr])
         print(
             tabulate(
                 attacks,
@@ -231,12 +239,12 @@ class Deck:
             # First Card
             rollingModifierStr = self._getEffectString(rollingEffects)
             firstRow = [
-                attackValue + rollingModifier + firstCard.modifier,
+                self._getModifierForPrinting(attackValue + rollingModifier + firstCard.modifier, firstCard.Effects),
                 self._getEffectString(firstCard.Effects),
                 rollingModifierStr,
             ]
             secondRow = [
-                attackValue + rollingModifier + secondCard.modifier,
+                self._getModifierForPrinting(attackValue + rollingModifier + secondCard.modifier, secondCard.Effects),
                 self._getEffectString(secondCard.Effects),
                 rollingModifierStr,
             ]
