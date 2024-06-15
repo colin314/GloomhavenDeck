@@ -12,17 +12,18 @@ class DeckProgram(cmd.Cmd):
     def __init__(self):
         cmd.Cmd.__init__(self)
         self.deck = Deck("BaseDeck.csv", "DeckModifications.csv")
+        self.defaultAttack = 2
 
     def do_a(self, arg):
         "Make an attack for x n times: attack x n"
         if not arg:
-            arg = "2 1"
+            arg = str(self.defaultAttack) + " 1"
         self.deck.draw(*parse(arg))
 
     def do_aa(self, arg):
         "Make an attack x with advantage n times: aa x n"
         if not arg:
-            arg = "2 1"
+            arg = str(self.defaultAttack) + " 1"
         elif len(str.split(arg," ")) < 2:
             arg = arg + " 1"
         arg = parse(arg)
@@ -31,7 +32,7 @@ class DeckProgram(cmd.Cmd):
     def do_da(self, arg):
         "Make an attack x with disadvantage n times: da x n"
         if not arg:
-            arg = "2 1"
+            arg = str(self.defaultAttack) + " 1"
         elif len(str.split(arg," ")) < 2:
             arg = arg + " 1"
         arg = parse(arg)
@@ -52,6 +53,13 @@ class DeckProgram(cmd.Cmd):
         else:
             arg = int(arg)
         self.deck.resetTimeout = arg
+
+    def do_setdefatt(self,arg):
+        "Set the default attack value. Specify nothing to reset to default of 2: setdefatt 2"
+        if not arg:
+            self.defaultAttack = 2
+        else:
+            self.defaultAttack = int(arg)
 
     def do_curse(self, arg):
         "Add a n curses to your deck: curse"
