@@ -67,12 +67,6 @@ class DeckProgram(cmd.Cmd):
             arg = 1
         self.deck.addCurse(int(arg))
 
-    def do_bye(self, arg):
-        "Stop recording, close the turtle window, and exit:  BYE"
-        print("Thank you for using the virtual attack deck")
-        self.close()
-        return True
-
     def do_q(self, arg):
         "Stop recording, close the turtle window, and exit:  BYE"
         print("Thank you for using the virtual attack deck")
