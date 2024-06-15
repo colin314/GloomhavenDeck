@@ -67,6 +67,9 @@ class Deck:
             self._setResetFlag()
         return str.join(", ", [x.name for x in effectList if not x == Effect.NONE])
 
+    def _getEffectStringForPrinting(self, effectList):
+        return str.join(", ", [x.name for x in effectList if not x == Effect.NONE])
+
     def _drawCard(self, drawnCards):
         if len(self._Cards) == 0:
             self.reset()
@@ -247,7 +250,7 @@ class Deck:
                 count[key],
                 card.modifier,
                 "True" if card.rolling else "",
-                self._getEffectString(card.Effects),
+                self._getEffectStringForPrinting(card.Effects),
                 key,
             ]
             tableRows.append(tableRow)
