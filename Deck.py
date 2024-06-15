@@ -262,7 +262,8 @@ class Deck:
         tableRows.sort(key=sortAlg)
         # Apply color formatting to the modifier
         tableRows = [
-            [x[0], cardDict[x[4]].modifierStr(), x[2], x[3]] for x in tableRows
+            [x[0], cardDict[x[4]].modifierStr(), x[2], cardDict[x[4]].effectStr()]
+            for x in tableRows
         ]
         # Build table and print
         table.extend(tableRows)

@@ -41,3 +41,16 @@ class Card:
         else:
             color = bcolors.WHITE
         return color + mod + bcolors.ENDC
+
+    def effectStr(self):
+        effectList = []
+        for effect in self.Effects:
+            if effect == Effect.NONE:
+                continue
+            color = ""
+            if effect == Effect.CRITICAL:
+                color = bcolors.MAGENTA
+            elif effect == Effect.MISS:
+                color = bcolors.YELLOW
+            effectList.append(color + effect.name + bcolors.ENDC)
+        return str.join(", ", effectList)
