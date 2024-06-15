@@ -7,23 +7,23 @@ from datetime import datetime
 
 class Deck:
     def __init__(self, deckFile, modificationFile, resetTimeout = 60):
-        self.Cards = []
-        self.Drawn = []
-        self.loadDeck(deckFile)
-        self.loadDeckModifications(modificationFile)
+        self._Cards = []
+        self._Drawn = []
+        self._loadDeck(deckFile)
+        self._loadDeckModifications(modificationFile)
         self._shuffle()
-        self.resetNeeded = False
-        self.resetTime = datetime.now()
-        self.resetTimeout = resetTimeout
+        self._resetNeeded = False
+        self._resetTime = datetime.now()
+        self._resetTimeout = resetTimeout
 
-    def loadDeck(self, deckFile):
+    def _loadDeck(self, deckFile):
         f = open(deckFile)
         lines = f.read().splitlines()
 
         for cardStr in lines:
             self._addCard(cardStr)
 
-    def loadDeckModifications(self, modificationFile):
+    def _loadDeckModifications(self, modificationFile):
         f = open(modificationFile)
         lines = f.read().splitlines()
 
@@ -38,16 +38,16 @@ class Deck:
             rolling = mods[2] == "1"
             effects = [Effect(int(x)) for x in mods[3].split(",")]
             if removeCard:
-                for card in self.Cards:
+                for card in self._Cards:
                     if card.equals(modifier, rolling, effects):
-                        self.Cards.remove(card)
+                        self._Cards.remove(card)
                         break
             else:
                 newCard = Card(modifier, rolling, *effects)
-                self.Cards.append(newCard)
+                self._Cards.append(newCard)
 
     def _addCard(self, cardStr):
-        self.Cards.append(self._loadCard(cardStr))
+        self._Cards.append(self._loadCard(cardStr))
 
     # Card string is modifier,rolling,Effect_list_(comma separated)
     def _loadCard(self, cardStr):
@@ -58,27 +58,27 @@ class Deck:
         return Card(modifier, rolling, *effects)
 
     def _shuffle(self):
-        rand.shuffle(self.Cards)
+        rand.shuffle(self._Cards)
 
     def reset(self, hard=False):
-        if not hard and not self.resetNeeded:
+        if not hard and not self._resetNeeded:
             print("No reset is needed. If you would like to reset anyways, do a hard reset.")
             return
-        self.Cards.extend(self.Drawn)
-        self.Drawn = []
+        self._Cards.extend(self._Drawn)
+        self._Drawn = []
         self._shuffle()
-        self.resetNeeded = False
+        self._resetNeeded = False
 
     def addCurse(self, n=1):
         for i in range(n):
             curseCard = Card(0, False, Effect.MISS, Effect.REMOVE)
-            self.Cards.append(curseCard)
+            self._Cards.append(curseCard)
             self._shuffle()
 
     def addBless(self, n=1):
         for i in range(n):
             curseCard = Card(0, False, Effect.CRITICAL, Effect.REMOVE)
-            self.Cards.append(curseCard)
+            self._Cards.append(curseCard)
             self._shuffle()
 
     def _getEffectString(self, effectList):
@@ -87,38 +87,38 @@ class Deck:
         return str.join(", ", [x.name for x in effectList if not x == Effect.NONE])
 
     def _drawCard(self, drawnCards):
-        if len(self.Cards) == 0:
+        if len(self._Cards) == 0:
             self.reset()
         # Check for the condition where all cards are in the draw pile
-        if len(self.Cards) == 0:
+        if len(self._Cards) == 0:
             print(
                 "You're completely out of cards to draw (everything has already been drawn). This shouldn't happen, but I'm going to just shuffle all drawn cards back in. You might lose some attack effects. Just saying."
             )
-            self.Drawn.extend(drawnCards)
+            self._Drawn.extend(drawnCards)
             self.reset()
         # Draw the card
-        drawnCard = self.Cards.pop()
+        drawnCard = self._Cards.pop()
         # Add non-remove cards (i.e., non Curse/Bless) to the drawn pile
         if not Effect.REMOVE in drawnCard.Effects:
             drawnCards.append(drawnCard)
         return drawnCard
 
     def _checkForReset(self):
-        if self.resetNeeded and (datetime.now() - self.resetTime).total_seconds() > self.resetTimeout:
+        if self._resetNeeded and (datetime.now() - self._resetTime).total_seconds() > self._resetTimeout:
             cont = input("Your deck needs a reset. Enter 0 to ignore and continue, 1 to reset and continue: ")
             cont = int(cont)
             if cont == 1:
                 self.reset()
             else:
-                self.resetTime = datetime.now()
+                self._resetTime = datetime.now()
 
     def _setResetFlag(self):
-        self.resetNeeded = True
-        self.resetTime = datetime.now()
+        self._resetNeeded = True
+        self._resetTime = datetime.now()
 
     def draw(self, attackValue, attackCount=1):
         self._checkForReset()
-        if len(self.Cards) == 0:
+        if len(self._Cards) == 0:
             self.reset()
         drawnCards = []
 
@@ -149,10 +149,10 @@ class Deck:
         )
 
         # Place all drawn cards into the discard
-        self.Drawn.extend(drawnCards)
+        self._Drawn.extend(drawnCards)
 
         # Reset reminder
-        if self.resetNeeded:
+        if self._resetNeeded:
             print("\tDon't forget you need to reset your deck")
 
         return attackValue
@@ -169,7 +169,7 @@ class Deck:
             firstCard = currCard
             secondCard = self._drawCard(drawnCards)
 
-            self.Drawn.extend(drawnCards)
+            self._Drawn.extend(drawnCards)
 
             # Check for shuffle cards
             if any(any(x == Effect.SHUFFLE for x in card.Effects) for card in drawnCards):
@@ -215,10 +215,7 @@ class Deck:
                 )
             )
 
-        if self.resetNeeded:
+        if self._resetNeeded:
             print("\tDon't forget you need to reset your deck")
 
         print("")
-
-        # Compare and get outcome
-        # Put cards in drawn pile
