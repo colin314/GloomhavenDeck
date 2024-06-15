@@ -80,9 +80,25 @@ class Deck:
             self.resetNeeded = True
         return str.join(", ", [x.name for x in effectList if not x == Effect.NONE])
 
+    def _drawCard(self, drawnCards):
+        if len(self.Cards) == 0:
+            self.reset()
+        # Check for the condition where all cards are in the draw pile
+        if len(self.Cards) == 0:
+            print("You're completely out of cards to draw (everything has already been drawn). This shouldn't happen, but I'm going to just shuffle all drawn cards back in. You might lose some attack effects. Just saying.")
+            self.Drawn.extend(drawnCards)
+            self.reset()
+        # Draw the card
+        drawnCard = self.Cards.pop()
+        # Add non-remove cards (i.e., non Curse/Bless) to the drawn pile
+        if not Effect.REMOVE in drawnCard.Effects:
+            drawnCards.append(drawnCard)
+        return drawnCard
+
     def draw(self, attackValue, attackCount=1):
         if len(self.Cards) == 0:
             self.reset()
+        drawnCards = []
 
         origAttack = attackValue
         attacks = [["Attack Value", "Effect List"]]
@@ -91,13 +107,10 @@ class Deck:
             attackValue = origAttack
             # Draw card
             while True:
-                # FIXME: There is a bug if you try to roll into an empty deck
-                drawnCard = self.Cards.pop()
+                drawnCard = self._drawCard(drawnCards)
                 attackValue = attackValue + drawnCard.modifier
                 effectList.extend(drawnCard.Effects)
-                # If the card shouldn't be removed, then add it to drawn pile
-                if not Effect.REMOVE in drawnCard.Effects:
-                    self.Drawn.append(drawnCard)
+
                 if not drawnCard.rolling:
                     break
 
@@ -113,6 +126,9 @@ class Deck:
             )
         )
 
+        # Place all drawn cards into the discard
+        self.Drawn.extend(drawnCards)
+
         # Reset reminder
         if self.resetNeeded:
             print("\tDon't forget you need to reset your deck")
@@ -120,25 +136,18 @@ class Deck:
         return attackValue
 
     def drawSpecial(self, attackValue, advantage=False):
-        currCard = self.Cards.pop()
+        drawnCards = []
+        currCard = self._drawCard(drawnCards)
         rollingCards = []
         while currCard.rolling:
             rollingCards.append(currCard)
-            currCard = self.Cards.pop()
+            currCard = self._drawCard(drawnCards)
         firstCard = currCard
-        secondCard = self.Cards.pop()
+        secondCard = self._drawCard(drawnCards)
 
         # Check for shuffle cards
-        drawnCards = [firstCard, secondCard]
-        drawnCards.extend(rollingCards)
         if any(any(x == Effect.SHUFFLE for x in card.Effects) for card in drawnCards):
             self.resetNeeded = True
-
-        # Just put everything in the draw pile right away
-        self.Drawn.extend(
-            [x for x in [firstCard, secondCard] if not Effect.REMOVE in x.Effects]
-        )
-        self.Drawn.extend([x for x in rollingCards if not Effect.REMOVE in x.Effects])
 
         # If disadvantage, discard all rolling modifiers
         if not advantage:
