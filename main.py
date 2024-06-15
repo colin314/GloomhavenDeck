@@ -25,6 +25,12 @@ class DeckProgram(cmd.Cmd):
             arg = 2
         self.deck.drawSpecial(int(arg), True)
 
+    def do_da(self, arg):
+        "Make an attack with disadvantage: da 2"
+        if not arg:
+            arg = 2
+        self.deck.drawSpecial(int(arg), False)
+
     def do_reset(self, arg):
         "Shuffle the discard back into the attack deck. Only resets if one is needed. To override this (i.e., a hard reset), add a 1 as an option to the command: reset"
         if not arg:
