@@ -4,7 +4,7 @@ import random as rand
 from tabulate import tabulate
 from datetime import datetime
 from collections import Counter
-
+from Resources import bcolors
 
 class Deck:
     def __init__(self, deckFile, modificationFile, resetTimeout=60):
@@ -67,10 +67,20 @@ class Deck:
     def _getEffectString(self, effectList):
         if any(x == Effect.SHUFFLE for x in effectList):
             self._setResetFlag()
-        return str.join(", ", [x.name for x in effectList if not x == Effect.NONE])
+        return self._getEffectStringForPrinting(effectList)
 
     def _getEffectStringForPrinting(self, effectList):
-        return str.join(", ", [x.name for x in effectList if not x == Effect.NONE])
+        effectOutput = []
+        for effect in effectList:
+            if effect == Effect.NONE:
+                continue
+            color = ""
+            if effect == Effect.CRITICAL:
+                color = bcolors.MAGENTA
+            elif effect == Effect.MISS:
+                color = bcolors.YELLOW
+            effectOutput.append(color + effect.name + bcolors.ENDC)
+        return str.join(", ", effectOutput)
 
     def _drawCard(self, drawnCards):
         if len(self._Cards) == 0:
