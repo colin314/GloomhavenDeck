@@ -85,7 +85,9 @@ class Deck:
             self.reset()
         # Check for the condition where all cards are in the draw pile
         if len(self.Cards) == 0:
-            print("You're completely out of cards to draw (everything has already been drawn). This shouldn't happen, but I'm going to just shuffle all drawn cards back in. You might lose some attack effects. Just saying.")
+            print(
+                "You're completely out of cards to draw (everything has already been drawn). This shouldn't happen, but I'm going to just shuffle all drawn cards back in. You might lose some attack effects. Just saying."
+            )
             self.Drawn.extend(drawnCards)
             self.reset()
         # Draw the card
