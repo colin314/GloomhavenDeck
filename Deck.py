@@ -157,62 +157,63 @@ class Deck:
 
         return attackValue
 
-    def drawSpecial(self, attackValue, advantage=False):
+    def drawSpecial(self, attackValue, attackCount=1, advantage=False):
         self._checkForReset()
-        drawnCards = []
-        currCard = self._drawCard(drawnCards)
-        rollingCards = []
-        while currCard.rolling:
-            rollingCards.append(currCard)
+        for i in range(attackCount):
+            drawnCards = []
             currCard = self._drawCard(drawnCards)
-        firstCard = currCard
-        secondCard = self._drawCard(drawnCards)
-
-        self.Drawn.extend(drawnCards)
-
-        # Check for shuffle cards
-        if any(any(x == Effect.SHUFFLE for x in card.Effects) for card in drawnCards):
-            self._setResetFlag()
-
-        # If disadvantage, discard all rolling modifiers
-        if not advantage:
             rollingCards = []
+            while currCard.rolling:
+                rollingCards.append(currCard)
+                currCard = self._drawCard(drawnCards)
+            firstCard = currCard
+            secondCard = self._drawCard(drawnCards)
 
-        rollingModifier = sum([x.modifier for x in rollingCards])
-        rollingEffects = set(
-            [
-                effect
-                for card in rollingCards
-                for effect in card.Effects
-                if effect != Effect.NONE
-            ]
-        )
+            self.Drawn.extend(drawnCards)
 
-        # First Card
-        rollingModifierStr = self._getEffectString(rollingEffects)
-        firstRow = [
-            attackValue + rollingModifier + firstCard.modifier,
-            self._getEffectString(firstCard.Effects),
-            rollingModifierStr,
-        ]
-        secondRow = [
-            attackValue + rollingModifier + secondCard.modifier,
-            self._getEffectString(secondCard.Effects),
-            rollingModifierStr,
-        ]
+            # Check for shuffle cards
+            if any(any(x == Effect.SHUFFLE for x in card.Effects) for card in drawnCards):
+                self._setResetFlag()
 
-        print(
-            tabulate(
+            # If disadvantage, discard all rolling modifiers
+            if not advantage:
+                rollingCards = []
+
+            rollingModifier = sum([x.modifier for x in rollingCards])
+            rollingEffects = set(
                 [
-                    ["Attack value", "Modifiers", "Rolling Modifiers"],
-                    firstRow,
-                    secondRow,
-                ],
-                headers="firstrow",
-                tablefmt="fancy_grid",
-                showindex="always",
+                    effect
+                    for card in rollingCards
+                    for effect in card.Effects
+                    if effect != Effect.NONE
+                ]
             )
-        )
+
+            # First Card
+            rollingModifierStr = self._getEffectString(rollingEffects)
+            firstRow = [
+                attackValue + rollingModifier + firstCard.modifier,
+                self._getEffectString(firstCard.Effects),
+                rollingModifierStr,
+            ]
+            secondRow = [
+                attackValue + rollingModifier + secondCard.modifier,
+                self._getEffectString(secondCard.Effects),
+                rollingModifierStr,
+            ]
+
+            print(
+                tabulate(
+                    [
+                        ["Attack value", "Modifiers", "Rolling Modifiers"],
+                        firstRow,
+                        secondRow,
+                    ],
+                    headers="firstrow",
+                    tablefmt="fancy_grid",
+                    showindex="always",
+                )
+            )
 
         if self.resetNeeded:
             print("\tDon't forget you need to reset your deck")

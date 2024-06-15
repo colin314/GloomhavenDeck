@@ -20,16 +20,22 @@ class DeckProgram(cmd.Cmd):
         self.deck.draw(*parse(arg))
 
     def do_aa(self, arg):
-        "Make an attack with advantage: aa 2"
+        "Make an attack x with advantage n times: aa x n"
         if not arg:
-            arg = 2
-        self.deck.drawSpecial(int(arg), True)
+            arg = "2 1"
+        elif len(str.split(arg," ")) < 2:
+            arg = arg + " 1"
+        arg = parse(arg)
+        self.deck.drawSpecial(arg[0], attackCount=arg[1], advantage=True)
 
     def do_da(self, arg):
-        "Make an attack with disadvantage: da 2"
+        "Make an attack x with disadvantage n times: da x n"
         if not arg:
-            arg = 2
-        self.deck.drawSpecial(int(arg), False)
+            arg = "2 1"
+        elif len(str.split(arg," ")) < 2:
+            arg = arg + " 1"
+        arg = parse(arg)
+        self.deck.drawSpecial(arg[0], attackCount=arg[1], advantage=False)
 
     def do_reset(self, arg):
         "Shuffle the discard back into the attack deck. Only resets if one is needed. To override this (i.e., a hard reset), add a 1 as an option to the command: reset"
