@@ -147,6 +147,8 @@ class Deck:
         firstCard = currCard
         secondCard = self._drawCard(drawnCards)
 
+        self.Drawn.extend(drawnCards)
+
         # Check for shuffle cards
         if any(any(x == Effect.SHUFFLE for x in card.Effects) for card in drawnCards):
             self.resetNeeded = True
