@@ -168,23 +168,30 @@ class Deck:
         )
 
         # First Card
-        modifiedAttack = attackValue + rollingModifier + firstCard.modifier
-        print(f"\tFirst Card: {modifiedAttack}")
-        print("\tFirst Card Effects: ")
-        for effect in firstCard.Effects:
-            print(f"\t\t{effect}")
+        rollingModifierStr = self._getEffectString(rollingEffects)
+        firstRow = [
+            attackValue + rollingModifier + firstCard.modifier,
+            self._getEffectString(firstCard.Effects),
+            rollingModifierStr,
+        ]
+        secondRow = [
+            attackValue + rollingModifier + secondCard.modifier,
+            self._getEffectString(secondCard.Effects),
+            rollingModifierStr,
+        ]
 
-        # Second Card
-        modifiedAttack = attackValue + rollingModifier + secondCard.modifier
-        print(f"\tSecond Card: {modifiedAttack}")
-        print("\tSecond Card Effects: ")
-        for effect in secondCard.Effects:
-            print(f"\t\t{effect}")
-
-        if len(rollingCards) > 0:
-            print("\tRolling Effects:")
-            for effect in rollingEffects:
-                print(f"\t\t{effect}")
+        print(
+            tabulate(
+                [
+                    ["Attack value", "Modifiers", "Rolling Modifiers"],
+                    firstRow,
+                    secondRow,
+                ],
+                headers="firstrow",
+                tablefmt="fancy_grid",
+                showindex="always",
+            )
+        )
 
         print("")
 
