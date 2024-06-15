@@ -248,17 +248,21 @@ class Deck:
                 card.modifier,
                 "True" if card.rolling else "",
                 self._getEffectString(card.Effects),
+                key,
             ]
             tableRows.append(tableRow)
 
+        # Sort the output
         def sortAlg(row):
-            sortVal = int(str(row[1]) + ("1" if row[2] == "True" else "0"))
-            print(sortVal)
-            return sortVal
+            return int(str(row[1]) + ("1" if row[2] == "True" else "0"))
 
         tableRows.sort(key=sortAlg)
+        # Apply color formatting to the modifier
+        tableRows = [
+            [x[0], cardDict[x[4]].modifierStr(), x[2], x[3]] for x in tableRows
+        ]
+        # Build table and print
         table.extend(tableRows)
-
         print(tabulate(table, headers="firstrow", tablefmt="fancy_grid"))
 
 
