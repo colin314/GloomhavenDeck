@@ -109,8 +109,8 @@ class Deck:
 
     # Store current state so we can undo back to it if needed
     def _storeState(self):
-        self._CardStateStack.append(self._Cards)
-        self._DrawnStateStack.append(self._Drawn)
+        self._CardStateStack.append(self._Cards[:])
+        self._DrawnStateStack.append(self._Drawn[:])
 
     # endregion
 
@@ -291,6 +291,13 @@ class Deck:
         # Build table and print
         table.extend(tableRows)
         print(tabulate(table, headers="firstrow", tablefmt="fancy_grid"))
+
+    def undo(self):
+        if len(self._CardStateStack) == 0:
+            print("Nothing to be undone. Aborting undo.")
+            return
+        self._Cards = self._CardStateStack.pop()
+        self._Drawn = self._DrawnStateStack.pop()
 
 
 # endregion

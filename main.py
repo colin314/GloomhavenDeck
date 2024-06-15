@@ -77,6 +77,10 @@ class DeckProgram(cmd.Cmd):
         "Print the contents of the deck"
         self.deck.printDeck()
 
+    def do_undo(self, arg):
+        "Undo the most recent command. Only works on commands that modify the deck."
+        self.deck.undo()
+
     def do_q(self, arg):
         "Stop recording, close the turtle window, and exit:  BYE"
         print("Thank you for using the virtual attack deck")
