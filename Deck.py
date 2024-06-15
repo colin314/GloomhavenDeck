@@ -257,7 +257,7 @@ class Deck:
 
         # Sort the output
         def sortAlg(row):
-            return int(str(row[1]) + ("1" if row[2] == "True" else "0"))
+            return (row[1], 1 if row[2] == "True" else 0, row[3])
 
         tableRows.sort(key=sortAlg)
         # Apply color formatting to the modifier
