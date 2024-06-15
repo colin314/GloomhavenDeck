@@ -16,6 +16,7 @@ class Deck:
         self._resetTime = datetime.now()
         self._resetTimeout = resetTimeout
 
+#region Private functions
     def _loadDeck(self, deckFile):
         f = open(deckFile)
         lines = f.read().splitlines()
@@ -60,27 +61,6 @@ class Deck:
     def _shuffle(self):
         rand.shuffle(self._Cards)
 
-    def reset(self, hard=False):
-        if not hard and not self._resetNeeded:
-            print("No reset is needed. If you would like to reset anyways, do a hard reset.")
-            return
-        self._Cards.extend(self._Drawn)
-        self._Drawn = []
-        self._shuffle()
-        self._resetNeeded = False
-
-    def addCurse(self, n=1):
-        for i in range(n):
-            curseCard = Card(0, False, Effect.MISS, Effect.REMOVE)
-            self._Cards.append(curseCard)
-            self._shuffle()
-
-    def addBless(self, n=1):
-        for i in range(n):
-            curseCard = Card(0, False, Effect.CRITICAL, Effect.REMOVE)
-            self._Cards.append(curseCard)
-            self._shuffle()
-
     def _getEffectString(self, effectList):
         if any(x == Effect.SHUFFLE for x in effectList):
             self._setResetFlag()
@@ -115,6 +95,29 @@ class Deck:
     def _setResetFlag(self):
         self._resetNeeded = True
         self._resetTime = datetime.now()
+#endregion
+
+#region Public functions
+    def reset(self, hard=False):
+        if not hard and not self._resetNeeded:
+            print("No reset is needed. If you would like to reset anyways, do a hard reset.")
+            return
+        self._Cards.extend(self._Drawn)
+        self._Drawn = []
+        self._shuffle()
+        self._resetNeeded = False
+
+    def addCurse(self, n=1):
+        for i in range(n):
+            curseCard = Card(0, False, Effect.MISS, Effect.REMOVE)
+            self._Cards.append(curseCard)
+            self._shuffle()
+
+    def addBless(self, n=1):
+        for i in range(n):
+            curseCard = Card(0, False, Effect.CRITICAL, Effect.REMOVE)
+            self._Cards.append(curseCard)
+            self._shuffle()
 
     def draw(self, attackValue, attackCount=1):
         self._checkForReset()
@@ -219,3 +222,4 @@ class Deck:
             print("\tDon't forget you need to reset your deck")
 
         print("")
+#endregion
