@@ -6,7 +6,7 @@ from datetime import datetime
 
 
 class Deck:
-    def __init__(self, deckFile, modificationFile):
+    def __init__(self, deckFile, modificationFile, resetTimeout = 60):
         self.Cards = []
         self.Drawn = []
         self.loadDeck(deckFile)
@@ -14,6 +14,7 @@ class Deck:
         self._shuffle()
         self.resetNeeded = False
         self.resetTime = datetime.now()
+        self.resetTimeout = resetTimeout
 
     def loadDeck(self, deckFile):
         f = open(deckFile)
@@ -103,7 +104,7 @@ class Deck:
         return drawnCard
 
     def _checkForReset(self):
-        if self.resetNeeded and (datetime.now() - self.resetTime).total_seconds() > 60:
+        if self.resetNeeded and (datetime.now() - self.resetTime).total_seconds() > self.resetTimeout:
             cont = input("Your deck needs a reset. Enter 0 to ignore and continue, 1 to reset and continue: ")
             cont = int(cont)
             if cont == 1:

@@ -33,6 +33,14 @@ class DeckProgram(cmd.Cmd):
             arg = True
         self.deck.reset(arg)
 
+    def do_settimeout(self, arg):
+        "Set the reset deck reminder timeout. Specify nothing to reset to default of 60 seconds: settimeout 60"
+        if not arg:
+            arg = 60
+        else:
+            arg = int(arg)
+        self.deck.resetTimeout = arg
+
     def do_curse(self, arg):
         "Add a n curses to your deck: curse"
         if not arg:
