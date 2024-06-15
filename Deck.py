@@ -193,6 +193,9 @@ class Deck:
             )
         )
 
+        if self.resetNeeded:
+            print("\tDon't forget you need to reset your deck")
+
         print("")
 
         # Compare and get outcome
