@@ -16,6 +16,8 @@ class Deck:
         self._resetNeeded = False
         self._resetTime = datetime.now()
         self._resetTimeout = resetTimeout
+        self._CardStateStack = []
+        self._DrawnStateStack = []
 
     # region Private functions
     def _loadDeck(self, deckFile):
@@ -105,6 +107,11 @@ class Deck:
         self._resetNeeded = True
         self._resetTime = datetime.now()
 
+    # Store current state so we can undo back to it if needed
+    def _storeState(self):
+        self._CardStateStack.append(self._Cards)
+        self._DrawnStateStack.append(self._Drawn)
+
     # endregion
 
     # region Public functions
@@ -114,24 +121,28 @@ class Deck:
                 "No reset is needed. If you would like to reset anyways, do a hard reset."
             )
             return
+        self._storeState()
         self._Cards.extend(self._Drawn)
         self._Drawn = []
         self._shuffle()
         self._resetNeeded = False
 
     def addCurse(self, n=1):
+        self._storeState()
         for i in range(n):
             curseCard = Card(0, False, Effect.MISS, Effect.REMOVE)
             self._Cards.append(curseCard)
             self._shuffle()
 
     def addBless(self, n=1):
+        self._storeState()
         for i in range(n):
             curseCard = Card(0, False, Effect.CRITICAL, Effect.REMOVE)
             self._Cards.append(curseCard)
             self._shuffle()
 
     def draw(self, attackValue, attackCount=1):
+        self._storeState()
         self._checkForReset()
         if len(self._Cards) == 0:
             self.reset()
@@ -173,6 +184,7 @@ class Deck:
         return attackValue
 
     def drawSpecial(self, attackValue, attackCount=1, advantage=False):
+        self._storeState()
         self._checkForReset()
         for i in range(attackCount):
             drawnCards = []
