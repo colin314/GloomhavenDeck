@@ -257,7 +257,18 @@ class Deck:
 
         # Sort the output
         def sortAlg(row):
-            return (row[1], 1 if row[2] == "True" else 0, row[3])
+            # Column 1: Modifier - Curse/Bless should sort inside of standard miss/crit
+            if "CRITICAL" in row[3]:
+                modifier = 98 if "REMOVE" in row[3] else 99
+            elif "MISS" in row[3]:
+                modifier = -98 if "REMOVE" in row[3] else -99
+            else:
+                modifier = row[1]
+            # Column 2: Rolling - Non-rolling lists before rolling
+            rolling = 1 if row[2] == "True" else 0
+            # Column 3: Effect List - Added just to make sorting consistent
+            effects = row[3]
+            return (modifier, rolling, effects)
 
         tableRows.sort(key=sortAlg)
         # Apply color formatting to the modifier
