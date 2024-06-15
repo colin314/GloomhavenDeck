@@ -22,3 +22,6 @@ class Card:
         print(f"Modifier: {self.modifier}")
         print(f'Rolling? {"Yes" if self.rolling else "No"}')
         print(f'Effect: {str.join(",",[str(effect) for effect in self.Effects])}')
+
+    def key(self):
+        return str.join("^",[str(self.modifier),str(self.rolling),*sorted([x.name for x in self.Effects])])
