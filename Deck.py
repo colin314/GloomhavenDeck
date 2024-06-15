@@ -2,6 +2,7 @@ from Card import Card
 from MyEnums import Effect
 import random as rand
 from tabulate import tabulate
+from datetime import datetime
 
 
 class Deck:
@@ -12,6 +13,7 @@ class Deck:
         self.loadDeckModifications(modificationFile)
         self._shuffle()
         self.resetNeeded = False
+        self.resetTime = datetime.now()
 
     def loadDeck(self, deckFile):
         f = open(deckFile)
@@ -80,7 +82,7 @@ class Deck:
 
     def _getEffectString(self, effectList):
         if any(x == Effect.SHUFFLE for x in effectList):
-            self.resetNeeded = True
+            self._setResetFlag()
         return str.join(", ", [x.name for x in effectList if not x == Effect.NONE])
 
     def _drawCard(self, drawnCards):
@@ -100,7 +102,21 @@ class Deck:
             drawnCards.append(drawnCard)
         return drawnCard
 
+    def _checkForReset(self):
+        if self.resetNeeded and (datetime.now() - self.resetTime).total_seconds() > 60:
+            cont = input("Your deck needs a reset. Enter 0 to ignore and continue, 1 to reset and continue: ")
+            cont = int(cont)
+            if cont == 1:
+                self.reset()
+            else:
+                self.resetTime = datetime.now()
+
+    def _setResetFlag(self):
+        self.resetNeeded = True
+        self.resetTime = datetime.now()
+
     def draw(self, attackValue, attackCount=1):
+        self._checkForReset()
         if len(self.Cards) == 0:
             self.reset()
         drawnCards = []
@@ -141,6 +157,7 @@ class Deck:
         return attackValue
 
     def drawSpecial(self, attackValue, advantage=False):
+        self._checkForReset()
         drawnCards = []
         currCard = self._drawCard(drawnCards)
         rollingCards = []
@@ -154,7 +171,7 @@ class Deck:
 
         # Check for shuffle cards
         if any(any(x == Effect.SHUFFLE for x in card.Effects) for card in drawnCards):
-            self.resetNeeded = True
+            self._setResetFlag()
 
         # If disadvantage, discard all rolling modifiers
         if not advantage:
