@@ -73,7 +73,7 @@ class DeckProgram(cmd.Cmd):
             arg = 1
         self.deck.addBless(int(arg))
 
-    def do_printdeck(self, arg):
+    def do_print(self, arg):
         "Print the contents of the deck"
         self.deck.printDeck()
 
