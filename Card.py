@@ -27,14 +27,17 @@ class Card:
         return str.join("^",[str(self.modifier),str(self.rolling),*sorted([x.name for x in self.Effects])])
     
     def modifierStr(self):
+        mod = str(self.modifier)
         if Effect.CRITICAL in self.Effects:
             color = bcolors.MAGENTA
+            mod = "x2"
         elif Effect.MISS in self.Effects:
             color = bcolors.YELLOW
+            mod = "x0"
         elif self.modifier > 0:
             color = bcolors.GREEN
         elif self.modifier < 0:
             color = bcolors.RED
         else:
             color = bcolors.WHITE
-        return color + str(self.modifier) + bcolors.ENDC
+        return color + mod + bcolors.ENDC
